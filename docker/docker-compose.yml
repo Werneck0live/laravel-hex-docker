@@ -1,0 +1,77 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile
+    container_name: lp_app
+    working_dir: /var/www/html
+    volumes:
+      - ../app:/var/www/html
+    depends_on:
+      - mysql
+    environment:
+      PHP_MEMORY_LIMIT: 512M
+    networks:
+      - lp_net
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile
+    container_name: lp_web
+    ports:
+      - "8001:80"
+    volumes:
+      - ../app:/var/www/html:delegated
+    depends_on:
+      - app
+    networks:
+      - lp_net
+
+  mysql:
+    image: mysql:8.0
+    container_name: lp_mysql
+    command: --default-authentication-plugin=mysql_native_password --sql-mode=""
+    environment:
+      MYSQL_DATABASE: appdb
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - lp_net
+
+  adminer:
+    image: adminer:latest
+    container_name: lp_adminer
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+    networks:
+      - lp_net
+
+  composer:
+    image: composer:2
+    container_name: lp_composer
+    working_dir: /var/www/html
+    entrypoint: ["composer"]
+    volumes:
+      - ../app:/var/www/html
+    networks:
+      - lp_net
+
+networks:
+  lp_net:
+    driver: bridge

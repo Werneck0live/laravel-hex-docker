@@ -1,0 +1,3 @@
+/app/vendor
+/app/.env
+docker/mysql/data/
