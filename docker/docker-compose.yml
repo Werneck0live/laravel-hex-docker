@@ -6,7 +6,7 @@ services:
     container_name: lp_app
     working_dir: /var/www/html
     volumes:
-      - ../app:/var/www/html
+      - ../src:/var/www/html
     depends_on:
       - mysql
     environment:
@@ -22,7 +22,7 @@ services:
     ports:
       - "8001:80"
     volumes:
-      - ../app:/var/www/html:delegated
+      - ../src:/var/www/html:delegated
     depends_on:
       - app
     networks:
@@ -68,7 +68,7 @@ services:
     working_dir: /var/www/html
     entrypoint: ["composer"]
     volumes:
-      - ../app:/var/www/html
+      - ../src:/var/www/html
     networks:
       - lp_net
 
