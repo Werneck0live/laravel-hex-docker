@@ -1,0 +1,575 @@
+{
+	"info": {
+		"_postman_id": "ede9573f-d729-4e33-895d-de0a6694a93d",
+		"name": "Laravel Portfolio API (with OAuth Setup)",
+		"description": "Coleção com um facilitador (em OAuth → Fetch OAuth Clients - DEV) para preencher automaticamente `passwordClientId`/`passwordClientSecret` e `m2mClientId`/`m2mClientSecret` a partir do backend (rota de DEV).\n\nRode primeiro **OAuth → Fetch OAuth Clients (DEV)**.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26125450",
+		"_collection_link": "https://crimson-rocket-449837.postman.co/workspace/Alura~5a2001f7-59cc-4d87-87ab-9aa760c3853f/collection/26125450-ede9573f-d729-4e33-895d-de0a6694a93d?action=share&source=collection_link&creator=26125450"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Healthcheck - /api/healthz",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/healthz",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"healthz"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth (Password Grant via API)",
+			"item": [
+				{
+					"name": "Login - /api/auth/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+									"  if (data && data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me - /api/auth/me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login 2 - before refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+									"  if (data && data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh - /api/auth/refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+									"  if (data && data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"refresh_token\": \"{{refreshToken}}\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout - /api/auth/logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Skills (scoped)",
+			"item": [
+				{
+					"name": "Login 3 - before skills",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+									"  if (data && data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"{{email}}\", \"password\": \"{{password}}\"}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listar skills - /api/skills (requires skills:read)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/skills",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"skills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar skill - /api/skills (requires skills:write)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Kafka\", \"level\": 4, \"years_experience\": 3, \"tags\": [\"streaming\"]}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/skills",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"skills"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OAuth",
+			"item": [
+				{
+					"name": "Fetch OAuth Clients (DEV)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"// Espera { passwordClientId, passwordClientSecret, m2mClientId?, m2mClientSecret? }",
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"var data = {};",
+									"try { data = pm.response.json(); } catch (e) {}",
+									"['passwordClientId','passwordClientSecret','m2mClientId','m2mClientSecret'].forEach(function(k){",
+									"  if (data && data[k]) { pm.collectionVariables.set(k, data[k]); }",
+									"});",
+									"pm.visualizer.set(`",
+									"<div style='font-family: system-ui'>",
+									"<h3>Variáveis atualizadas</h3>",
+									"<ul>",
+									"  <li><b>passwordClientId</b>: ${pm.collectionVariables.get('passwordClientId') || '<i>não definido</i>'}</li>",
+									"  <li><b>passwordClientSecret</b>: ${pm.collectionVariables.get('passwordClientSecret') || '<i>não definido</i>'}</li>",
+									"  <li><b>m2mClientId</b>: ${pm.collectionVariables.get('m2mClientId') || '<i>não definido</i>'}</li>",
+									"  <li><b>m2mClientSecret</b>: ${pm.collectionVariables.get('m2mClientSecret') || '<i>não definido</i>'}</li>",
+									"</ul>",
+									"</div>`);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/dev/oauth-clients",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"dev",
+								"oauth-clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token (Password Grant) - /oauth/token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('accessToken', data.access_token);",
+									"  if (data && data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{passwordClientId}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{passwordClientSecret}}",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "{{email}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{scope}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/oauth/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token (Client Credentials) - /oauth/token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function(){ pm.response.to.have.status(200); });",
+									"try { var data = pm.response.json();",
+									"  if (data && data.access_token) pm.collectionVariables.set('m2mAccessToken', data.access_token);",
+									"} catch(e) {}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{m2mClientId}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{m2mClientSecret}}",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "*",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/oauth/token",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "M2M ping - /api/m2m/ping",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{m2mAccessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/m2m/ping",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"m2m",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8001"
+		},
+		{
+			"key": "email",
+			"value": "dev@example.com"
+		},
+		{
+			"key": "password",
+			"value": "secret123"
+		},
+		{
+			"key": "scope",
+			"value": "skills:read skills:write"
+		},
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "refreshToken",
+			"value": ""
+		},
+		{
+			"key": "passwordClientId",
+			"value": ""
+		},
+		{
+			"key": "passwordClientSecret",
+			"value": ""
+		},
+		{
+			"key": "m2mClientId",
+			"value": ""
+		},
+		{
+			"key": "m2mClientSecret",
+			"value": ""
+		},
+		{
+			"key": "m2mAccessToken",
+			"value": ""
+		}
+	]
+}
