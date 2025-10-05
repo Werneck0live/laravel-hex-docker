@@ -1,3 +1,4 @@
-/app/vendor
-/app/.env
 docker/mysql/data/
+
+/src/vendor
+/src/.env
